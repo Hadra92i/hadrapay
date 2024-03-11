@@ -30,7 +30,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<SignUpResponseDto> register(@RequestBody SignUpDto signUpDto){
-        SignUpResponseDto responseDto = authService.register(signUpDto).getBody();
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+       ResponseEntity<SignUpResponseDto> responseEntity = authService.register(signUpDto);
+
+       if(responseEntity != null && responseEntity.getBody() != null){
+           SignUpResponseDto responseDto = responseEntity.getBody();
+           return ResponseEntity.status(responseEntity.getStatusCode()).body(responseDto);
+       }
+
+       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SignUpResponseDto("An error occurred during registration !"));
     }
 }
